@@ -89,3 +89,7 @@ print(f"🚀 Área Bajo la Curva ROC (ROC-AUC Score): {roc_auc_score(y_test, y_p
 # Guardar el modelo entrenado y la lista de columnas
 joblib.dump(best_model, 'modelo_churn.pkl')
 print("\n💾 ¡Modelo guardado exitosamente como 'modelo_churn.pkl'!")
+
+# Guardar en CSV
+df.to_csv('customers_churn.csv', index=False)
+print("✅ Archivo 'customers_churn.csv' creado exitosamente!")
