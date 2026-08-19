@@ -1,32 +1,43 @@
-# 🛡️ Customer Churn Prediction & Retention Analytics
+# AWS Cloud Data Lake & Customer Churn Analytics ☁️📊
 
-Este proyecto implementa una solución end-to-end de **Ciencia de Datos y Machine Learning Aplicado al Negocio** para predecir la probabilidad de cancelación (*Churn*) de clientes e identificar factores clave de insatisfacción.
-
-## 🎯 Problema de Negocio
-Retener a un cliente existente es entre 5 y 25 veces más económico que adquirir uno nuevo. La plataforma analiza el comportamiento transaccional e interacciones con soporte técnico para alertar de forma temprana sobre clientes en alto riesgo de abandono, permitiendo al equipo de retención aplicar estrategias proactivas.
+## 📌 Descripción del Proyecto
+Implementación de un **Data Lake serverless en AWS** para el análisis de retención y comportamiento de clientes (*Churn Rate*). El proyecto abarca desde el almacenamiento masivo de datos sin estructurar hasta la ejecución de consultas analíticas avanzadas en SQL para orientar decisiones de negocio.
 
 ---
 
-## 🛠️ Stack Tecnológico
-* **Lenguaje:** Python 3.10+
-* **Machine Learning & Preprocesamiento:** `scikit-learn`, `imbalanced-learn` (SMOTE)
-* **Algoritmo Seleccionado:** `HistGradientBoostingClassifier` con ajuste de hiperparámetros (`GridSearchCV`)
-* **Dashboard Interactivo:** `Streamlit`, `Plotly`
-* **Persistencia del Modelo:** `joblib`
+## 🏗️ Arquitectura de Solución
+1. **Amazon S3:** Almacenamiento desacoplado (*Data Lake Raw Layer*) de datos transaccionales en formato CSV.
+2. **AWS Glue (Data Catalog & Crawler):** Inferencia automática del esquema e indexación de metadatos en la base de datos `db_churn_analytics`.
+3. **Amazon Athena:** Motor de consultas SQL *serverless* ejecutado directamente sobre S3.
 
 ---
 
-## 📊 Métricas de Evaluación del Modelo
-* **ROC-AUC Score:** ~0.84+
-* **Precision (Clase Churn):** 85%
-* **Recall (Clase Churn):** 80%
-* **F1-Score (Clase Churn):** 0.83
+## 📈 Hallazgos Clave de Negocio (SQL Insights)
+
+* **Tasa General de Churn:** **68.13%** sobre un total de 1,500 clientes analizados.
+* **Riesgo por Antigüedad:** Los clientes de **0 a 1 año** presentan la mayor tasa de abandono (**80.38%**), reduciéndose al **61.86%** pasados los 3 años.
+* **Impacto del Soporte Técnico:** Los clientes **Sin Contrato** que registran **$\ge$5 tickets de soporte** alcanzan un nivel crítico de fuga del **95.67%**.
+* **Factor de Retención:** La combinación de **Contrato Anual** con **<5 tickets de soporte** disminuye el abandono al mínimo histórico del **24.44%**.
 
 ---
 
-## 🚀 Cómo Ejecutar Localmente
+## 🚀 Cómo Replicar el Proyecto
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone [https://github.com/TU_USUARIO/customer-churn-prediction.git](https://github.com/TU_USUARIO/customer-churn-prediction.git)
-   cd customer-churn-prediction
+1. **Cargar Datos:** Subir `customers_churn.csv` a la ruta `s3://<tu-bucket>/raw/customers/`.
+2. **Catalogar Esquema:** Crear y ejecutar el Glue Crawler apuntando al directorio de S3.
+3. **Consultar:** Ejecutar los scripts ubicados en la carpeta `/sql` directamente en **Amazon Athena**.
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+* **Cloud Infrastructure:** AWS S3, AWS Glue, Amazon Athena, AWS IAM.
+* **Lenguajes & Herramientas:** SQL, Python (Pandas, NumPy), Git.
+
+```mermaid
+flowchart LR
+    A[📄 customers_churn.csv] -->|Carga de Datos| B[(📦 Amazon S3 Bucket<br>raw/customers/)]
+    B -->|Escaneo e Inferencia| C[🕷️ AWS Glue Crawler]
+    C -->|Metadatos / Esquema| D[📑 AWS Data Catalog<br>db_churn_analytics]
+    D -->|Consulta Serverless| E[⚡ Amazon Athena]
+    E -->|Almacena Resultados| F[(📦 Amazon S3 Bucket<br>athena-results/)]
+```
